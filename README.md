@@ -4,4 +4,4 @@ Tool to help you filter for interesting lines in your log file.
 
 # Examples
 
-- `cargo run --example simple`
+- `cargo run --example simple` in the `examples/simple` directory
