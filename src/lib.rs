@@ -52,7 +52,7 @@ where
         for string_to_match in &strings_to_match {
             if line.contains(string_to_match.as_ref()) {
                 matched_lines.push(MatchedLine {
-                    line_number,
+                    line_number: line_number + 1,
                     line: line.to_string(),
                 });
             }
