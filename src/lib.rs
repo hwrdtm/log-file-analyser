@@ -1,7 +1,10 @@
 #![allow(dead_code)]
 
 use core::fmt;
-use std::{fs::{self, File}, io::{BufRead, BufReader}};
+use std::{
+    fs::{self, File},
+    io::{BufRead, BufReader},
+};
 
 type Result<T> = std::result::Result<T, Error>;
 
@@ -43,8 +46,7 @@ where
     T: AsRef<str>,
 {
     // First read the file.
-    let file_contents = fs::read_to_string(file_path.as_ref())
-        .map_err(|e| Error::from(e))?;
+    let file_contents = fs::read_to_string(file_path.as_ref()).map_err(|e| Error::from(e))?;
 
     // Then, iterate over each line and collect the matched lines as well as the line number.
     let mut matched_lines = Vec::new();
