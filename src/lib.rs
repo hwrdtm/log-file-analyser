@@ -1,7 +1,7 @@
 #![allow(dead_code)]
 
 use core::fmt;
-use std::fs;
+use std::{fs::{self, File}, io::{BufRead, BufReader}};
 
 type Result<T> = std::result::Result<T, Error>;
 
@@ -60,4 +60,24 @@ where
     }
 
     Ok(MatchResult { matched_lines })
+}
+
+pub fn streaming_match_and_print<T>(strings_to_match: Vec<T>, file_path: T) -> Result<()>
+where
+    T: AsRef<str>,
+{
+    let file = File::open(file_path.as_ref())?;
+    let reader = BufReader::new(file);
+
+    for (line_number, line) in reader.lines().enumerate() {
+        let line = line?;
+
+        for string_to_match in &strings_to_match {
+            if line.contains(string_to_match.as_ref()) {
+                println!("{}: {}", line_number + 1, line);
+            }
+        }
+    }
+
+    Ok(())
 }
