@@ -9,3 +9,6 @@ edition = "2021"
 
 [[example]]
 name = "simple"
+
+[[merge_and_print]]
+name = "merge_and_print"
