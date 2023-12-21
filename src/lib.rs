@@ -7,6 +7,7 @@ use std::fs;
 pub mod error;
 pub mod iterator;
 pub mod models;
+pub mod utils;
 
 pub struct MatchedLine {
     line_number: usize,
