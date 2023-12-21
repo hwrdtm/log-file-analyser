@@ -9,8 +9,8 @@ use log_file_analyser::{
 };
 
 fn main() {
-    let file1 = File::open("./test_1.log").expect("Unable to open file");
-    let file2 = File::open("./test_2.log").expect("Unable to open file");
+    let file1 = File::open("./test_data/test_1.log").expect("Unable to open file");
+    let file2 = File::open("./test_data/test_2.log").expect("Unable to open file");
 
     let reader1 = BufReader::new(file1);
     let reader2 = BufReader::new(file2);

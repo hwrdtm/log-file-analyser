@@ -2,6 +2,6 @@
 
 ```log
 Success!
-1: line number 2
-3: this is something else
+2: line number 2
+4: this is something else
 ```
