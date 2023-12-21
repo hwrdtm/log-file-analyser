@@ -53,12 +53,46 @@ where
     Ok(())
 }
 
+pub fn filter_and_write_lines<T, F>(
+    input_file_path: T,
+    filter_predicate: F,
+    output_file_path: T,
+) -> Result<()>
+where
+    T: AsRef<str>,
+    F: Fn(&Line) -> bool,
+{
+    // First, create the iterator for the input file using the Line struct, and apply the filter.
+    let mapping_fn = |i: (usize, io::Result<String>)| {
+        let idx = i.0;
+        let line = i.1.expect("Unable to read line");
+
+        Line::new(idx + 1, line)
+    };
+
+    let file = File::open(input_file_path.as_ref())?;
+    let reader = BufReader::new(file);
+    let iter = reader
+        .lines()
+        .enumerate()
+        .map(mapping_fn)
+        .filter(&filter_predicate);
+
+    // Then, write the iterator to the output file.
+    let mut file = File::create(output_file_path.as_ref())?;
+    for line in iter {
+        writeln!(file, "{}", line.line_contents())?;
+    }
+
+    Ok(())
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
 
     #[test]
-    fn merge() {
+    fn test_filter_merge_and_write_lines() {
         let input_files = vec![
             "./test_data/test_1.log",
             "./test_data/test_2.log",
@@ -87,5 +121,24 @@ mod tests {
         assert_eq!(iter.next().unwrap().unwrap(), "3: three".to_string());
         assert_eq!(iter.next().unwrap().unwrap(), "5: five".to_string());
         assert_eq!(iter.next().unwrap().unwrap(), "6: six".to_string());
+        assert!(iter.next().is_none());
+    }
+
+    #[test]
+    fn test_filter_and_write_lines() {
+        let input_file = "./test_data/test_1.log";
+        let output_file = "./test_data/filtered_1.log";
+
+        let filter_fn = |l: &Line| l.line_number() % 2 == 0;
+
+        filter_and_write_lines(input_file, filter_fn, output_file).expect("Unable to filter file");
+
+        // Now check the output file.
+        let file = File::open(output_file).expect("Unable to open file");
+        let reader = BufReader::new(file);
+        let mut iter = reader.lines();
+
+        assert_eq!(iter.next().unwrap().unwrap(), "5: five".to_string());
+        assert!(iter.next().is_none());
     }
 }
